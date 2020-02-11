@@ -39,4 +39,5 @@ class Board{
         let board = this.getElement();
         return board.getContext(PUZZLE.CTX);
     }
+
 }

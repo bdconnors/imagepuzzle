@@ -16,7 +16,7 @@ class Templates{
     }
     getPuzzle(){
         return`<div id="${PUZZLE.CONTAINER_ID}">
-            <canvas id="${PUZZLE.ID}"></canvas>
+            <canvas id="${PUZZLE.ID}" style="border: ${PUZZLE.OUTLINE_STROKE}px ${PUZZLE.OUTLINE_COLOR};"></canvas>
             <br>
             <br>
             <input id="${PUZZLE.CREATE_BTN_ID}" type="${PUZZLE.CREATE_BTN_TYPE}" value="${PUZZLE.CREATE_BTN_TXT}">

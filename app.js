@@ -12,6 +12,7 @@ function load() {
     addClickEvent(UPLOAD.SUBMIT_BTN_ID,upload);
     addClickEvent(PUZZLE.CREATE_BTN_ID,puzzle.displayBoardState.bind(puzzle));
     addClickEvent(PUZZLE.RESET_BTN_ID,puzzle.displaySolution.bind(puzzle));
+    addClickEvent(PUZZLE.ID,puzzle.pieceClicked.bind(puzzle));
     hide(PUZZLE.CONTAINER_ID);
 }
 

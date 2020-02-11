@@ -25,7 +25,7 @@ class Puzzle{
             let y = pieceHeight * i;
             for(let j = 0; j < PUZZLE.ROW; j++){
                 let x = pieceWidth * j;
-                this.pieces.push(new Piece(pieceCount,x,y));
+                this.pieces.push(new Piece(pieceCount, x, y));
                 pieceCount++;
             }
         }
@@ -39,25 +39,35 @@ class Puzzle{
         this.display(this.solution);
     }
     display(piecePositions){
-        console.log(this);
-        console.log(piecePositions);;
         let ctx = this.board.getContext();
-        ctx.lineWidth = PUZZLE.OUTLINE_STROKE;
-        ctx.strokeStyle = PUZZLE.OUTLINE_COLOR;
-        ctx.canvas.width = this.image.width;
-        ctx.canvas.height = this.image.height;
+        let pieceWidth = this.getPieceWidth();
+        let pieceHeight = this.getPieceHeight();
+        ctx.canvas.width = this.image.width + 1;
+        ctx.canvas.height = this.image.height + 1;
         for(let i = 0; i < piecePositions.length; i++){
             let piecePos = piecePositions[i];
-            console.log(piecePos);
             let piece = this.getPiece(piecePos.pieceId);
-            console.log(piece);
             let pos = this.board.getPosition(piecePositions[i].posId);
-            let pieceWidth = this.getPieceWidth();
-            let pieceHeight = this.getPieceHeight();
-
-            ctx.drawImage(this.image,piece.imgX,piece.imgY,pieceWidth,pieceHeight,pos.x,pos.y,pieceWidth,pieceHeight);
-            ctx.strokeRect(pos.x, pos.y, ctx.canvas.width, ctx.canvas.height);
+            if(this.isRemoved(pos.id)) {
+                ctx.fillRect(pos.x,pos.y,pieceWidth,pieceHeight);
+            }else{
+                ctx.drawImage(this.image, piece.imgX, piece.imgY, pieceWidth, pieceHeight, pos.x, pos.y, pieceWidth, pieceHeight);
+                ctx.strokeRect(pos.x, pos.y, ctx.canvas.width, ctx.canvas.height);
+            }
         }
+    }
+    pieceClicked(e){
+        let rect = this.board.getElement().getBoundingClientRect();
+        let x = e.clientX - rect.left;
+        let y = e.clientY - rect.top;
+        console.log("Coordinate x: " + x,
+            "Coordinate y: " + y);
+    }
+    isRemoved(posId){
+        return posId === (this.getPieceCount() - 1);
+    }
+    getPieceCount(){
+        return PUZZLE.COL * PUZZLE.ROW;
     }
     getPiece(id){
         return this.pieces.find((piece)=>{return piece.id === id});

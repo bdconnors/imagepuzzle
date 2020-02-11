@@ -27,7 +27,7 @@ const PUZZLE ={
     COL:4,
     ROW: 4,
     CONTAINER_ID:'puzzle-container',
-    OUTLINE_COLOR:'#f00',
+    OUTLINE_COLOR:'#000',
     OUTLINE_STROKE:2,
     CREATE_BTN_ID:'createBtn',
     CREATE_BTN_TYPE:'submit',
