@@ -1,10 +1,11 @@
 const templates = new Templates();
 const view = new View(templates);
+const jumbler = new Jumbler(CONSTANTS.jumbler);
 
 document.addEventListener('DOMContentLoaded',load);
 
 function load() {
-    view.loadContainer();
+    view.loadHeader();
     view.loadForm();
     listenForImage();
 }
@@ -16,9 +17,10 @@ async function upload(){
     let input = view.getElement(CONSTANTS.form.upload.id);
     let file = input.prop(CONSTANTS.files)[0];
     let image = await getImage(file);
-    console.log(image);
-    view.loadCanvas();
-    view.drawImage(image);
+    view.loadCanvas(image);
+    jumbler.generate(image);
+    view.drawPuzzle(image,jumbler);
+
 }
 function getImage(file){
     return new Promise((resolve,reject)=>{

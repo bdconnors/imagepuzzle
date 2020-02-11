@@ -2,18 +2,15 @@ class Templates{
 
     constructor(){}
 
-    makeCanvas(config){
-        return`<div id="${config.container.id}">
-            <canvas id="${config.id}"></canvas>
-            <input id="${config.submit.id}" type="${config.submit.type}" value="${config.submit.text}">
-        </div>`
+    makeCanvas(config,width,height){
+        return`<canvas id="${config.id}" width="${width}" height="${height}"></canvas>`;
+
     }
-    makeContainer(config){
+    makeHeader(config){
         return`<div id="${config.id}">
-            <div id="${config.header.id}">
-                <h1>${config.header.text}</h1>
-            </div>
-        </div>`
+                <h1>${config.text}</h1>
+            </div>`;
+
     }
     makeForm(config){
         return`<div id="${config.id}">

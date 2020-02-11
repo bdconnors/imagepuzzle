@@ -1,17 +1,11 @@
 const CONSTANTS = {
-    container:{
-        id:'container',
-        header:{
-            id:'header',
-            text:'Image Puzzle'
-        }
+    header:{
+        id:'header',
+        text:'Image Puzzle'
     },
     canvas:{
         id:'canvas',
         context:'2d',
-        container:{
-            id:'canvasContainer'
-        },
         submit:{
             id:'jumble',
             type:'submit',
@@ -36,6 +30,10 @@ const CONSTANTS = {
     },
     image:{
         id:'pristine-image'
+    },
+    jumbler:{
+        columns:4,
+        rows: 4
     },
     files:'files',
     selector:'#',
