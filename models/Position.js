@@ -1,5 +1,6 @@
 class Position{
-    constructor(x = 0, y = 0){
+    constructor(id = null,x = 0, y = 0){
+        this.id = id;
         this.x = x;
         this.y = y;
     }
