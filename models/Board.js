@@ -2,7 +2,7 @@ class Board{
     constructor(col,row){
         this.col = col;
         this.row = row;
-        this.positions = col * row;
+        this.positions = this.col * this.row;
         this.state = [];
     }
     generate(cellH,cellW){
@@ -13,10 +13,20 @@ class Board{
             for(let j = 0; j < this.row; j++){
                 let row = j;
                 let x = cellW * j;
-                this.state.push(new Position(id,col,row,x,y));
+                let top = y;
+                let bottom = top + cellH;
+                let left = x;
+                let right = left + cellW;
+                let position = new Position(id,col,row,x,y);
+                position.setBoundaries(top,bottom,left,right);
+                this.state.push(position);
                 id++;
             }
         }
+        console.log(this);
+    }
+    getByRange(x,y){
+        return this.state.find((pos)=>{return pos.inRange(x,y) === true});
     }
     addPosition(position){
         this.state.push(position);

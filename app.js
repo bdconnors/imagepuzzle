@@ -22,6 +22,7 @@ async function upload(){
     puzzle = constructPuzzle(image);
     addClickEvent(PUZZLE.CREATE_BTN_ID,puzzle.displayPuzzle.bind(puzzle));
     addClickEvent(PUZZLE.RESET_BTN_ID,puzzle.displaySolution.bind(puzzle));
+    addClickEvent(PUZZLE.ID,puzzle.getClickPos.bind(puzzle));
     puzzle.displaySolution();
 
 }

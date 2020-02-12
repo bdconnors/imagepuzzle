@@ -14,7 +14,7 @@ class Puzzle{
         this.randomize();
         for(let i = 0; i < this.board.state.length; i++){
             let piece = this.pieces[i];
-            console.log(piece);
+
             this.board.setByPosition(i,piece);
         }
     }
@@ -65,7 +65,19 @@ class Puzzle{
     isRemoved(posId){
         return posId === (this.getPieceCount() - 1);
     }
-
+    getClickPos(e){
+        console.log(this.board);
+        let rect = this.getElement().getBoundingClientRect();
+        let x = e.clientX - rect.left;
+        let y = e.clientY - rect.top;
+        console.log("Coordinate x: " + x,
+            "Coordinate y: " + y);
+        let pos = this.board.getByRange(x,y);
+        let ctx = this.getContext();
+        ctx.strokeStyle = '#ff0000';
+        ctx.lineWidth = 4;
+        ctx.strokeRect(pos.x, pos.y, this.getPieceWidth(), this.getPieceHeight());
+    }
     getPieceCount(){
         return this.pieces.length;
     }
