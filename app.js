@@ -1,5 +1,5 @@
 const templates = new Templates();
-const puzzle = new Puzzle(new Board());
+let puzzle;
 
 $(document).ready(()=>{
     load();
@@ -10,9 +10,6 @@ function load() {
     appendBody(templates.get(TMPL.UPLOAD));
     appendBody(templates.get(TMPL.PUZZLE));
     addClickEvent(UPLOAD.SUBMIT_BTN_ID,upload);
-    addClickEvent(PUZZLE.CREATE_BTN_ID,puzzle.displayBoardState.bind(puzzle));
-    addClickEvent(PUZZLE.RESET_BTN_ID,puzzle.displaySolution.bind(puzzle));
-    addClickEvent(PUZZLE.ID,puzzle.pieceClicked.bind(puzzle));
     hide(PUZZLE.CONTAINER_ID);
 }
 
@@ -22,8 +19,20 @@ async function upload(){
     let image = await getImage(file);
     this.remove(UPLOAD.ID);
     show(PUZZLE.CONTAINER_ID);
-    puzzle.generatePuzzle(image);
+    puzzle = constructPuzzle(image);
+    addClickEvent(PUZZLE.CREATE_BTN_ID,puzzle.displayPuzzle.bind(puzzle));
+    addClickEvent(PUZZLE.RESET_BTN_ID,puzzle.displaySolution.bind(puzzle));
     puzzle.displaySolution();
+
+}
+function constructPuzzle(image){
+    let solution = new Board(PUZZLE.COL,PUZZLE.ROW);
+    let board = new Board(PUZZLE.COL,PUZZLE.ROW);
+    puzzle = new Puzzle(image,board,solution);
+    puzzle.createPieces();
+    puzzle.createSolution();
+    puzzle.shuffleBoard();
+    return puzzle;
 }
 function getImage(file){
     return new Promise((resolve,reject)=>{
