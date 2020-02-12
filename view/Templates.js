@@ -19,7 +19,7 @@ class Templates{
             <canvas id="${PUZZLE.ID}" style="border: ${PUZZLE.OUTLINE_STROKE}px ${PUZZLE.OUTLINE_COLOR};"></canvas>
             <br>
             <br>
-            <input id="${PUZZLE.CREATE_BTN_ID}" type="${PUZZLE.CREATE_BTN_TYPE}" value="${PUZZLE.CREATE_BTN_TXT}">
+            <input id="${PUZZLE.SHUFFLE_BTN_ID}" type="${PUZZLE.SHUFFLE_BTN_TYPE}" value="${PUZZLE.SHUFFLE_BTN_TXT}">
             <input id="${PUZZLE.RESET_BTN_ID}" type="${PUZZLE.RESET_BTN_TYPE}" value="${PUZZLE.RESET_BTN_TXT}">
             <br>
         </div>`;
@@ -28,6 +28,7 @@ class Templates{
     getHeader(){
         return`<div id="${HEADER.ID}">
                 <h1>${HEADER.TXT}</h1>
+                <h2 id="${HEADER.STATUS_ID}"></h2>
             </div>`;
 
     }

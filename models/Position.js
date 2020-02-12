@@ -11,9 +11,6 @@ class Position{
         this.left = null;
         this.piece = piece;
     }
-    highlight(){
-
-    }
     inRange(x,y){
         let vertical = y >= this.top && y <= this.bottom;
         let horizontal = x >= this.left && x <= this.right;
@@ -42,5 +39,10 @@ class Position{
     }
     getPiece(){
         return this.piece;
+    }
+    correctPiece(){
+        let x = this.x === this.piece.imgX;
+        let y = this.y === this.piece.imgY;
+        return x && y;
     }
 }

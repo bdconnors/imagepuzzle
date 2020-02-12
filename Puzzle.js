@@ -1,30 +1,24 @@
 class Puzzle{
-    constructor(image = null,board = new Board(),solution = new Board()){
+    constructor(image = null,board = new Board()){
         this.board = board;
-        this.solution = solution;
         this.image = image;
         this.pieces = [];
-    }
-    randomize(){
-        this.pieces.sort(() => Math.random() - 0.5);
+        this.state = STATE.NO_SELECTION;
     }
 
-    shuffleBoard(){
-        this.board.generate(this.getPieceHeight(),this.getPieceWidth());
-        this.randomize();
+    shuffleBoard=()=>{
+        this.randomizePieces();
         for(let i = 0; i < this.board.state.length; i++){
             let piece = this.pieces[i];
-
             this.board.setByPosition(i,piece);
         }
-    }
-    createSolution(){
-        this.solution.generate(this.getPieceHeight(),this.getPieceWidth());
-        for(let i = 0; i < this.pieces.length; i++){
-            this.solution.setByPosition(i,this.getPiece(i));
-        }
-    }
-    createPieces(){
+        this.setSolved(false);
+        this.displayBoard();
+    };
+    createBoard=()=>{
+        this.board.generate(this.getPieceHeight(),this.getPieceWidth());
+    };
+    createPieces=()=>{
         let id = 0;
         let width = this.getPieceWidth();
         let height = this.getPieceHeight();
@@ -37,70 +31,147 @@ class Puzzle{
                 id++;
             }
         }
-    }
-    displayPuzzle(){
-       this.display(this.board);
-    }
-    displaySolution(){
-        this.display(this.solution);
-    }
-    display(board){
+    };
+    randomizePieces=()=>{
+        this.pieces.sort(() => Math.random() - 0.5);
+    };
+    displayBoard=()=>{
+       this.display(false);
+    };
+    displaySolution=()=>{
+        this.display(true);
+    };
+    display=(solution)=>{
         let ctx = this.getContext();
-        let width = this.getPieceWidth();
-        let height = this.getPieceHeight();
-        ctx.canvas.width = this.image.width + 1;
-        ctx.canvas.height = this.image.height + 1;
-        for(let i = 0; i < board.state.length; i++){
-            let pos = board.state[i];
-            let piece = pos.getPiece();
-            if(this.isRemoved(pos.id)) {
-                ctx.fillRect(pos.x,pos.y,width,height);
-            }else{
-                ctx.drawImage(this.image, piece.imgX, piece.imgY, width, height, pos.x, pos.y, width, height);
-                ctx.strokeRect(pos.x, pos.y, ctx.canvas.width, ctx.canvas.height);
-            }
+        ctx.canvas.width = this.image.width;
+        ctx.canvas.height = this.image.height;
+        this.setSolved(solution);
+        for(let i = 0; i < this.board.state.length; i++){
+            let pos = this.board.state[i];
+            this.drawPiece(pos,solution);
         }
-    }
-
-    isRemoved(posId){
-        return posId === (this.getPieceCount() - 1);
-    }
-    getClickPos(e){
-        console.log(this.board);
+    };
+    clicked=(e)=>{
         let rect = this.getElement().getBoundingClientRect();
         let x = e.clientX - rect.left;
         let y = e.clientY - rect.top;
-        console.log("Coordinate x: " + x,
-            "Coordinate y: " + y);
-        let pos = this.board.getByRange(x,y);
+        switch(this.state){
+            case STATE.SOLVED:
+                return false;
+            case STATE.NO_SELECTION:
+                this.selectPiece(x,y);
+                break;
+            case STATE.PIECE_SELECTED:
+                this.movePieces(x,y);
+                break;
+            default:
+                return false;
+
+        }
+
+    };
+
+    selectPiece=(x,y)=>{
+        this.board.setSelection(x,y);
+        this.state = STATE.PIECE_SELECTED;
+    };
+    selectTarget=(x,y)=>{
+        this.board.setTarget(x,y);
+    };
+    movePieces=(x,y)=>{
+        this.selectTarget(x,y);
+        this.board.move();
+        this.drawPiece(this.board.selected);
+        this.drawPiece(this.board.target);
+        this.state = STATE.NO_SELECTION;
+        this.checkComplete();
+
+    };
+    checkComplete=()=>{
+        let state = this.board.state;
+        let falseCount = 0;
+        let trueCount = 0;
+        for(let i = 0; i < state.length; i++){
+            if(!state[i].correctPiece()){
+                console.log(state[i]);
+                console.log(state[i].piece);
+                falseCount++;
+            }else{
+                trueCount++;
+            }
+        }
+        console.log('incorrect: '+falseCount);
+        console.log('correct: '+trueCount);
+        if(falseCount === 0){
+            this.state = STATE.SOLVED;
+            this.setSolved(true);
+        }else{
+            this.setSolved(false);
+        }
+
+    };
+    drawPiece=(pos,solution)=>{
+        let width = this.getPieceWidth();
+        let height = this.getPieceHeight();
         let ctx = this.getContext();
-        ctx.strokeStyle = '#ff0000';
-        ctx.lineWidth = 4;
-        ctx.strokeRect(pos.x, pos.y, this.getPieceWidth(), this.getPieceHeight());
-    }
-    getPieceCount(){
+        let imgX;
+        let imgY;
+        if(solution){
+            imgX = pos.x;
+            imgY = pos.y;
+        }else{
+            imgX = pos.piece.imgX;
+            imgY = pos.piece.imgY;
+        }
+        ctx.strokeStyle = PUZZLE.OUTLINE_COLOR;
+        ctx.drawImage(this.image, imgX, imgY, width, height, pos.x, pos.y, width, height);
+        ctx.strokeRect(pos.x,pos.y,width,height);
+
+    };
+    getPieceCount=()=>{
         return this.pieces.length;
-    }
-    getPiece(id){
+    };
+    getPiece=(id)=>{
         return this.pieces.find((piece)=>{return piece.id === id});
-    }
-    setImage(image){
+    };
+    setImage=(image)=>{
         this.image = image;
-    }
-    getImage(){
+    };
+    getImage=()=>{
         return this.image;
-    }
-    getPieceWidth(){
+    };
+    getPieceWidth=()=>{
         return this.image.width / PUZZLE.COL;
-    }
-    getPieceHeight(){
+    };
+    getPieceHeight=()=>{
         return this.image.height /  PUZZLE.ROW;
-    }
-    getContext(){
+    };
+    getContext=()=>{
         return this.getElement().getContext(PUZZLE.CTX);
-    }
-    getElement(){
+    };
+    getElement=()=>{
         return document.getElementById(PUZZLE.ID);
+    };
+    getStatus=()=>{
+        return $(SEL.ID+HEADER.STATUS_ID);
+    };
+    setSolved=(isSolved)=>{
+        console.log(isSolved);
+        let status = this.getStatus();
+        let color;
+        let txt;
+        if(isSolved){
+            color = HEADER.STATUS_SOLVED_COLOR;
+            txt = HEADER.STATUS_SOLVED_TXT;
+            this.state = STATE.SOLVED;
+        }else{
+            color = HEADER.STATUS_UNSOLVED_COLOR;
+            txt = HEADER.STATUS_UNSOLVED_TXT;
+            this.state = STATE.NO_SELECTION;
+        }
+        status.empty();
+        status.text(txt);
+        status.css(PROP.COLOR,color);
     }
 }
 

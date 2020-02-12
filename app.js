@@ -17,23 +17,23 @@ async function upload(){
     let input = getElement(UPLOAD.INPUT_ID);
     let file = input.prop(PROP.FILES)[0];
     let image = await getImage(file);
-    this.remove(UPLOAD.ID);
+    puzzle = makePuzzle(image);
+    hide(UPLOAD.ID);
     show(PUZZLE.CONTAINER_ID);
-    puzzle = constructPuzzle(image);
-    addClickEvent(PUZZLE.CREATE_BTN_ID,puzzle.displayPuzzle.bind(puzzle));
-    addClickEvent(PUZZLE.RESET_BTN_ID,puzzle.displaySolution.bind(puzzle));
-    addClickEvent(PUZZLE.ID,puzzle.getClickPos.bind(puzzle));
     puzzle.displaySolution();
-
 }
-function constructPuzzle(image){
-    let solution = new Board(PUZZLE.COL,PUZZLE.ROW);
+function makePuzzle(image){
     let board = new Board(PUZZLE.COL,PUZZLE.ROW);
-    puzzle = new Puzzle(image,board,solution);
+    puzzle = new Puzzle(image,board);
     puzzle.createPieces();
-    puzzle.createSolution();
-    puzzle.shuffleBoard();
+    puzzle.createBoard();
+    bindControls();
     return puzzle;
+}
+function bindControls(){
+    addClickEvent(PUZZLE.SHUFFLE_BTN_ID,puzzle.shuffleBoard);
+    addClickEvent(PUZZLE.RESET_BTN_ID,puzzle.displaySolution);
+    addClickEvent(PUZZLE.ID,puzzle.clicked);
 }
 function getImage(file){
     return new Promise((resolve,reject)=>{
